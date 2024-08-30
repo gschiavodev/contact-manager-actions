@@ -31,7 +31,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}
-          if [ "$(pwd)" = "${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}" ]; then
+          if [ "$(pwd -P)" -ef "${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}" ]; then
             echo "Correct directory, proceeding with deletion"
             ls -R .
           else
