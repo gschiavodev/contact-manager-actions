@@ -2,6 +2,11 @@ name: Deploy
 
 on:
   workflow_dispatch: # Trigger deployment manually
+  push:
+    branches:
+      - main
+    paths:
+      - 'Frontend/**' # Trigger deployment on changes to the Frontend folder
 
 jobs:
   deploy:
@@ -10,9 +15,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
-
-    - name: List workspace contents for debugging
-      run: ls -R ${{ github.workspace }}
 
     - name: Verify Frontend directory
       run: |
