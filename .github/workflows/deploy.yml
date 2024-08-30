@@ -20,6 +20,12 @@ jobs:
     - name: List workspace contents for debugging
       run: ls -R
 
+    - name: Print environment variables
+      run: env
+    
+    - name: Print GITHUB_WORKSPACE
+      run: echo $GITHUB_WORKSPACE
+
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@v1.0.3
       env:
