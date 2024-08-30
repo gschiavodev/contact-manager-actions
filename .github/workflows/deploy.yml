@@ -30,8 +30,8 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd ${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}
-          if [ "$(pwd -P)" -ef "${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}" ]; then
+          cd ~/htdocs
+          if [ "$(realpath $(pwd -P))" = "$(realpath ~/htdocs)" ]; then
             echo "Correct directory, proceeding with deletion"
             ls -R .
           else
