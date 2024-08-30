@@ -15,10 +15,16 @@ jobs:
       id: ssh-agent  # Add an ID to reference this step
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ vars.SSH_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Remove all files from the 'htdocs' directory
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "rm -rf ${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}/*"
+      env:
+        SSH_AUTH_SOCK: ${{ steps.ssh-agent.outputs.ssh-auth-sock }}
 
     - name: Copy 'website' directory to the 'htdocs' directory
       run: |
-        rsync -avz ./website/ ${{ vars.SSH_USERNAME }}@${{ vars.SSH_HOST }}:${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}
+        rsync -avz ./website/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}
       env:
         SSH_AUTH_SOCK: ${{ steps.ssh-agent.outputs.ssh-auth-sock }}
