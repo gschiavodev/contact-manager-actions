@@ -14,14 +14,6 @@ jobs:
     - name: List workspace contents for debugging
       run: ls -R ${{ github.workspace }}
 
-    - name: Print environment variables
-      run: env
-    
-    - name: Print GITHUB_WORKSPACE
-      run: |
-        echo ${{ github.workspace }}
-        ls -R ${{ github.workspace }}
-
     - name: Verify Frontend directory
       run: |
         if [ -d "${{ github.workspace }}/Frontend" ]; then
@@ -37,11 +29,19 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: ls -R $BITNAMI_HT_DOCS_DIRECTORY/*
+        script: |
+          cd ${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}
+          if [ "$(pwd)" = "${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}" ]; then
+            echo "Correct directory, proceeding with deletion"
+            ls -R .
+          else
+            echo "Failed to change directory, aborting"
+            exit 1
+          fi
 
     - name: Transfer files using scp
       run: |
-        scp -r -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ github.workspace }}/Frontend/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:$BITNAMI_HT_DOCS_DIRECTORY
+        scp -r -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ github.workspace }}/Frontend/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}
 
     - name: Restart Apache on remote server
       uses: appleboy/ssh-action@v1.0.3
