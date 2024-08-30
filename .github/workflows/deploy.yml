@@ -24,7 +24,10 @@ jobs:
       run: env
     
     - name: Print GITHUB_WORKSPACE
-      run: echo $GITHUB_WORKSPACE
+      run: |
+        echo $GITHUB_WORKSPACE
+        ls -R $GITHUB_WORKSPACE
+
 
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@v1.0.3
