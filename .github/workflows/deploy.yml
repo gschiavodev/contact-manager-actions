@@ -39,6 +39,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         envs: BITNAMI_HT_DOCS_DIRECTORY
         script: |
+          ls -R $GITHUB_WORKSPACE
           sudo rm -rf $BITNAMI_HT_DOCS_DIRECTORY/*
           sudo cp -r $GITHUB_WORKSPACE/Frontend/* $BITNAMI_HT_DOCS_DIRECTORY/
           sudo /opt/bitnami/ctlscript.sh restart apache
