@@ -31,5 +31,5 @@ jobs:
         envs: BITNAMI_HT_DOCS_DIRECTORY
         script: |
           sudo rm -rf $BITNAMI_HT_DOCS_DIRECTORY/*
-          sudo cp -r Frontend/* $BITNAMI_HT_DOCS_DIRECTORY/
+          sudo cp -r $GITHUB_WORKSPACE/Frontend/* $BITNAMI_HT_DOCS_DIRECTORY/
           sudo /opt/bitnami/ctlscript.sh restart apache
