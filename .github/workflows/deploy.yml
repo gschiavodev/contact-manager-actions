@@ -1,12 +1,6 @@
-name: Deploy to Bitnami Server
+name: Deploy
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'Frontend/**' # Trigger only when there are changes in the Frontend directory
-
   workflow_dispatch: # Trigger deployment manually
 
 jobs:
@@ -18,28 +12,43 @@ jobs:
       uses: actions/checkout@v4.1.7
 
     - name: List workspace contents for debugging
-      run: ls -R
+      run: ls -R ${{ github.workspace }}
 
     - name: Print environment variables
       run: env
     
     - name: Print GITHUB_WORKSPACE
       run: |
-        echo $GITHUB_WORKSPACE
-        ls -R $GITHUB_WORKSPACE
+        echo ${{ github.workspace }}
+        ls -R ${{ github.workspace }}
 
+    - name: Verify Frontend directory
+      run: |
+        if [ -d "${{ github.workspace }}/Frontend" ]; then
+          echo "Frontend directory exists."
+        else
+          echo "Frontend directory does not exist."
+          exit 1
+        fi
 
-    - name: executing remote ssh commands using ssh key
+    - name: Remove existing files on remote server
       uses: appleboy/ssh-action@v1.0.3
-      env:
-        BITNAMI_HT_DOCS_DIRECTORY: ${{ vars.BITNAMI_HT_DOCS_DIRECTORY }}
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        envs: BITNAMI_HT_DOCS_DIRECTORY
         script: |
-          ls -R $GITHUB_WORKSPACE
           sudo rm -rf $BITNAMI_HT_DOCS_DIRECTORY/*
-          sudo cp -r $GITHUB_WORKSPACE/Frontend/* $BITNAMI_HT_DOCS_DIRECTORY/
+
+    - name: Transfer files using scp
+      run: |
+        scp -r -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ github.workspace }}/Frontend/* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:$BITNAMI_HT_DOCS_DIRECTORY
+
+    - name: Restart Apache on remote server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
           sudo /opt/bitnami/ctlscript.sh restart apache
