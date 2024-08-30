@@ -1,6 +1,12 @@
 name: Deploy to Bitnami Server
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Frontend/**' # Trigger only when there are changes in the Frontend directory
+
   workflow_dispatch: # Trigger deployment manually
 
 jobs:
