@@ -37,8 +37,7 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          sudo rm -rf $BITNAMI_HT_DOCS_DIRECTORY/*
+        script: ls -R $BITNAMI_HT_DOCS_DIRECTORY/*
 
     - name: Transfer files using scp
       run: |
