@@ -33,7 +33,7 @@ jobs:
           cd ~/htdocs
           if [ "$(realpath $(pwd -P))" = "$(realpath ~/htdocs)" ]; then
             echo "Correct directory, proceeding with deletion"
-            ls -R .
+            rm -rf *
           else
             echo "Failed to change directory, aborting"
             exit 1
