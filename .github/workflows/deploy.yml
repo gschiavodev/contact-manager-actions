@@ -39,6 +39,11 @@ jobs:
             exit 1
           fi
 
+    - name: Add remote server to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
     - name: Transfer files using scp
       run: |
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/private_key
