@@ -13,7 +13,7 @@ jobs:
 
     - name: Set up SSH
       id: ssh-agent  # Add an ID to reference this step
-      uses: webfactory/ssh-agent@v0.7.0
+      uses: webfactory/ssh-agent@v0.8.0
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
